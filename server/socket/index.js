@@ -1,15 +1,23 @@
 const Message = require('../db/models/message');
 const Channel = require('../db/models/channel');
 
-const drawings = {};
+// const drawings = {};
 const rooms = {};
+const games = {};
 
-function getDrawing(drawingName) {
-  if (drawings[drawingName] === undefined) {
-    drawings[drawingName] = [];
+function getGame(roomPath) {
+  if (games[roomPath] === undefined) {
+    games[roomPath] = {players: [], drawing: []};
   }
-  return drawings[drawingName];
+  return games[roomPath];
 }
+
+// function getDrawing(roomPath) {
+//   if (drawings[roomPath] === undefined) {
+//     drawings[roomPath] = [];
+//   }
+//   return drawings[roomPath];
+// }
 function getRoomName(socket) {
   const urlArr = socket.request.headers.referer.split('/')
   const roomName = urlArr.pop() // grabbing just the last bit of the url for the room name
@@ -35,18 +43,50 @@ module.exports = io => {
       socket.broadcast.emit('new-channel', channel);
     });
 
+    //game
+    socket.on('start', (roomPath, startTime)=> {
+      const game = getGame(roomPath);
+      game.startTime = startTime;
+      io.in(roomPath).emit('start-from-server', game);
+    })
+
+    socket.on('join', (roomPath, name) => {
+      const game = getGame(roomPath);
+      game.players.push(name);
+      io.in(roomPath).emit('update-players', game.players);
+    })
+
+    socket.on('leave', (roomPath, name) => {
+      const game = getGame(roomPath);
+      const index = game.players.indexOf(name);
+      game.players.splice(index, 1);
+      console.log(game);
+      io.in(roomPath).emit('update-players', game.players);
+    })
+
     //drawing
-    socket.on('join-drawing', (drawingName) => {
-      socket.join(drawingName);
-      const drawing = getDrawing(drawingName);
-      socket.emit('replay-drawing', drawing);
+    socket.on('join-drawing', (roomPath) => {
+      socket.join(roomPath);
+      const game = getGame(roomPath);
+      const drawing = game.drawing;
+      socket.emit('replay-drawing', drawing, game);
+      socket.emit('update-players', game.players);
     });
 
-    socket.on('draw-from-client', (drawingName, start, end, color) => {
-      const drawing = getDrawing(drawingName);
+    socket.on('draw-from-client', (roomPath, start, end, color) => {
+      const game = getGame(roomPath);
+      const drawing = game.drawing;
       drawing.push([start, end, color,]);
-      socket.broadcast.to(drawingName).emit('draw-from-server', start, end, color);
+      socket.broadcast.to(roomPath).emit('draw-from-server', start, end, color);
     });
+
+    // socket.on('update-drawing', (roomPath, drawing) => {
+    //   socket.join(roomPath);
+    //   const game = getGame(roomPath);
+    //   const game.drawing = draw;
+    //   socket.broadcast.to(roomPath).emit('replay-drawing', drawing, game);
+
+    // });
 
     //room
     socket.on('drawing', (...payload) => {// REST - you have many arguments comma separated, but now they are all 1 (ONE) and named payload --> payload === array of all arguments sent in

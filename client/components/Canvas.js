@@ -22,6 +22,10 @@ class Canvas extends React.Component {
   }
 }
 
+export function clear () {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 /**
  * Draw a line on the whiteboard.
  *

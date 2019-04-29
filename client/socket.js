@@ -1,14 +1,15 @@
 import io from 'socket.io-client';
-import store, { getMessage, getChannel } from './store';
+import store, { getMessage, getChannel, loadGameThunk, updatePlayers, fetchNameThunk } from './store';
 import {draw, events as whiteboard} from './components/Canvas';
 
 const socket = io(window.location.origin);
 
-const drawingName = window.location.pathname;
+const roomPath = window.location.pathname;
 
 socket.on('connect', () => {
   console.log('I am now connected to the server!');
-  socket.emit('join-drawing', drawingName);
+  socket.emit('join-drawing', roomPath);
+
   socket.on('new-message', message => {
     store.dispatch(getMessage(message));
   });
@@ -19,7 +20,10 @@ socket.on('connect', () => {
 
 });
 
-socket.on('replay-drawing', (instructions) => {
+//drawing
+socket.on('replay-drawing', (instructions, game) => {
+  store.dispatch(loadGameThunk(game));
+  store.dispatch(fetchNameThunk());
   instructions.forEach(instruction => draw(...instruction, false));
 });
 
@@ -28,7 +32,21 @@ socket.on('draw-from-server', (start, end, color) => {
 });
 
 whiteboard.on('draw', (start, end, color) => {
-  socket.emit('draw-from-client', drawingName, start, end, color);
+  socket.emit('draw-from-client', roomPath, start, end, color);
 });
+
+
+//game
+socket.on('start-from-server', (game) => {
+  store.dispatch(loadGameThunk(game));
+});
+
+socket.on('update-players', (players) => {
+  store.dispatch(updatePlayers(players))
+})
+
+socket.on('clear-canvas', () => {
+  
+})
 
 export default socket;

@@ -7,7 +7,7 @@ export default function Sidebar () {
     <section className="sidebar">
       <div className="sidebar-header">
         <h3 href="#">
-          <div>Stack Chat</div>
+          <div>Funny Drawing</div>
           <i alt="Brand" className="glyphicon glyphicon-comment">
           </i>
         </h3>

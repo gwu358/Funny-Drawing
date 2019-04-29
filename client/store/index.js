@@ -19,6 +19,7 @@ import messages from './messages';
 import name from './name';
 import newChannelEntry from './newChannelEntry';
 import newMessageEntry from './newMessageEntry';
+import game from './game';
 
 const reducer = combineReducers({
   channels,
@@ -26,7 +27,8 @@ const reducer = combineReducers({
   messages,
   name,
   newChannelEntry,
-  newMessageEntry
+  newMessageEntry,
+  game
 });
 
 const store = createStore(
@@ -45,3 +47,4 @@ export * from './messages';
 export * from './name';
 export * from './newChannelEntry';
 export * from './newMessageEntry';
+export * from './game';

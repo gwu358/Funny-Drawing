@@ -19,7 +19,7 @@ function NewMessageEntry (props) {
           placeholder="Say something nice..."
         />
         <span className="input-group-btn">
-          <button className="btn btn-default" type="submit">Chat!</button>
+          <button className="btn btn-default" type="submit">Send</button>
         </span>
       </div>
     </form>

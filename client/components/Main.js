@@ -11,7 +11,7 @@ export default class Main extends Component {
   componentDidMount () {
     const messagesThunk = fetchMessages();
     const channelsThunk = fetchChannels();
-    store.dispatch(messagesThunk);
+    // store.dispatch(messagesThunk);
     store.dispatch(channelsThunk);
   }
 
