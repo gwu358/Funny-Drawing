@@ -4,10 +4,11 @@ module.exports = router;
 
 // GET api/name
 router.get('/', function (req, res) {
-  res.send(req.session.name);
+  res.send(req.session.roomPath);
 });
 
 router.post('/', function (req, res) {
-    req.session.name = req.body.name;
-    res.send(req.session.name);
+    console.log(req.body)
+    req.session.roomPath = req.body.roomPath;
+    res.send(req.session.roomPath);
   });

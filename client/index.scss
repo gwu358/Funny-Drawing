@@ -116,6 +116,13 @@ body {
       display: flex;
       flex-direction: column;
 
+      #lobby{
+        // background-color: yellow;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+      }
+
       .media-list {
         overflow-y: scroll;
         flex: 1 1 auto;
@@ -140,7 +147,7 @@ body {
 
       #new-message-form {
         position: relative;
-
+        
         .form-control {
           border-width: 3px 1.5px 3px 3px;
         }
@@ -190,3 +197,50 @@ canvas {
   box-shadow: none;
   transform: translate(0, 0);
 }
+
+//login MODAL
+.bg-modal {
+	background-color: rgba(0, 0, 0, 0.8);
+	width: 100%;
+  height: 100%;
+	position: absolute;
+  top: 0;
+  z-index: 5;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-contents {
+	height: 180px;
+	width: 250px;
+	background-color: rgb(204, 204, 204);
+	text-align: center;
+	padding: 20px;
+	position: relative;
+	border-radius: 4px;
+}
+
+#edit-name {
+	margin: 15px auto;
+	display: block;
+	width: 50%;
+	padding: 8px;
+	border: 1px solid gray;
+}
+
+.button {
+	background-color: blue;
+	border: 2px solid white;
+	border-radius: 30px;
+	padding: 10px 28px;
+	color: white;
+	margin-top: 10px;
+	display: inline-block;
+	&:hover {
+		background-color: white;
+		color: blue;
+		border: 2px solid blue;
+	}
+}
+

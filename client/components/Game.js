@@ -1,8 +1,8 @@
 import React from 'react';
-import socket from '../socket';
+import socket from '../socket'
+import axios from 'axios';
 import { connect } from 'react-redux';
-
-const roomPath = window.location.pathname;
+import {updateCurrentRoom} from '../store/currentGameRoom';
 
 class Game extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class Game extends React.Component {
     // this.resetTimer = this.resetTimer.bind(this)
   }
   startGame() {
-    socket.emit('start', roomPath, Date.now());
+    socket.emit('start', window.location.pathname, Date.now());
 
     // this.setState({
     //   time: 5000,
@@ -37,11 +37,13 @@ class Game extends React.Component {
   // resetTimer() {
   //   this.setState({ time: 3000 })
   // }
-  join(name) {
-    socket.emit('join', roomPath, name);
+   join(name) {
+    this.props.updateRoom(window.location.pathname);
+    socket.emit('join', window.location.pathname, name)
   }
   leave(name){
-    socket.emit('leave', roomPath, name);
+    this.props.updateRoom('');
+    socket.emit('leave', window.location.pathname, name);
   }
   render() {
     const {game, name} = this.props;
@@ -75,19 +77,18 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = function (state) {
-
   return {
     game: state.game,
-    name: state.name
+    name: state.name,
   };
 };
 
-// const mapDispatchToProps = function (dispatch) {
-//   return {
-//     changeCurrentChannel(channelName) {
-//       dispatch(changeCurrentChannel(channelName));
-//     }
-//   };
-// };
+const mapDispatchToProps = function (dispatch) {
+  return {
+    updateRoom(roomPath){
+      dispatch(updateCurrentRoom(roomPath));
+    }
+  };
+};
 
-  export default connect(mapStateToProps)(Game);
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

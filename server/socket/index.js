@@ -5,11 +5,13 @@ const Channel = require('../db/models/channel');
 const rooms = {};
 const games = {};
 
-function getGame(roomPath) {
-  if (games[roomPath] === undefined) {
-    games[roomPath] = {players: [], drawing: []};
+function createRoom(path) {
+  
+  if(!path) return;
+  if (games[path] === undefined) {
+    games[path] = {path, players: [], drawing: []};
   }
-  return games[roomPath];
+  return games[path];
 }
 
 // function getDrawing(roomPath) {
@@ -39,45 +41,58 @@ module.exports = io => {
       socket.broadcast.emit('new-message', message);
     });
 
-    socket.on('new-channel', channel => {
-      socket.broadcast.emit('new-channel', channel);
+    socket.on('fetch-channels-from-client', () => {
+      console.log(games);
+      const channdels = Object.keys(games).map((path, i) => ({path, name: games[path].name, leader:games[path].leader}));
+      console.log(channdels);
+      socket.emit('fetch-channels-from-server', channdels);
+    })
+
+    socket.on('new-channel', (name, leader) => {
+      const id = Object.keys(games).length + 1;
+      const game = createRoom('/channels/'+id);
+      game.name = name;
+      game.leader = leader;
+      const channel = {path: game.path, name, leader};
+      console.log(games)
+      io.emit('new-channel', channel);
     });
 
     //game
-    socket.on('start', (roomPath, startTime)=> {
-      const game = getGame(roomPath);
+    socket.on('start', (path, startTime)=> {
+      const game = games[path];
       game.startTime = startTime;
-      io.in(roomPath).emit('start-from-server', game);
+      io.in(path).emit('start-from-server', game);
     })
 
-    socket.on('join', (roomPath, name) => {
-      const game = getGame(roomPath);
+    socket.on('join', (path, name) => {
+      const game = games[path];
       game.players.push(name);
-      io.in(roomPath).emit('update-players', game.players);
+      io.in(path).emit('update-players', game.players);
     })
 
-    socket.on('leave', (roomPath, name) => {
-      const game = getGame(roomPath);
+    socket.on('leave', (path, name) => {
+      const game = games[path];
       const index = game.players.indexOf(name);
       game.players.splice(index, 1);
-      console.log(game);
-      io.in(roomPath).emit('update-players', game.players);
+      io.in(path).emit('update-players', game.players);
     })
 
     //drawing
-    socket.on('join-drawing', (roomPath) => {
-      socket.join(roomPath);
-      const game = getGame(roomPath);
+    socket.on('join-drawing', (path) => {
+      socket.join(path);
+      const game = games[path];
+      if(!game) return;
       const drawing = game.drawing;
       socket.emit('replay-drawing', drawing, game);
       socket.emit('update-players', game.players);
     });
 
-    socket.on('draw-from-client', (roomPath, start, end, color) => {
-      const game = getGame(roomPath);
+    socket.on('draw-from-client', (path, start, end, color) => {
+      const game = games[path];
       const drawing = game.drawing;
       drawing.push([start, end, color,]);
-      socket.broadcast.to(roomPath).emit('draw-from-server', start, end, color);
+      socket.broadcast.to(path).emit('draw-from-server', start, end, color);
     });
 
     // socket.on('update-drawing', (roomPath, drawing) => {

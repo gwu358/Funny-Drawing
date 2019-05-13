@@ -16,7 +16,7 @@ function Navbar (props) {
 
 const mapStateToProps = function (state) {
   return {
-    currentChannel: state.currentChannel
+    currentChannel: state.game.name
   };
 };
 

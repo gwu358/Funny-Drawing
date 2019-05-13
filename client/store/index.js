@@ -17,6 +17,8 @@ import channels from './channels';
 import currentChannel from './currentChannel';
 import messages from './messages';
 import name from './name';
+import currentGameRoom from './currentGameRoom';
+import editingName from './editingName'
 import newChannelEntry from './newChannelEntry';
 import newMessageEntry from './newMessageEntry';
 import game from './game';
@@ -26,6 +28,8 @@ const reducer = combineReducers({
   currentChannel,
   messages,
   name,
+  currentGameRoom,
+  editingName,
   newChannelEntry,
   newMessageEntry,
   game
@@ -45,6 +49,8 @@ export * from './channels';
 export * from './currentChannel';
 export * from './messages';
 export * from './name';
+export * from './currentGameRoom';
+export * from './editingName';
 export * from './newChannelEntry';
 export * from './newMessageEntry';
 export * from './game';

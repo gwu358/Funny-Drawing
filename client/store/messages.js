@@ -3,12 +3,12 @@ import socket from '../socket';
 
 // ACTION TYPES
 
-const GET_MESSAGE = 'GET_MESSAGE';
+const ADD_MESSAGE = 'ADD_MESSAGE';
 const GET_MESSAGES = 'GET_MESSAGES';
 
 // ACTION CREATORS
 
-export function getMessage (message) {
+export function addMessage (message) {
   const action = { type: GET_MESSAGE, message };
   return action;
 }
@@ -57,7 +57,7 @@ export default function reducer (state = [], action) {
     case GET_MESSAGES:
       return action.messages;
 
-    case GET_MESSAGE:
+    case ADD_MESSAGE:
       return [...state, action.message];
 
     default:

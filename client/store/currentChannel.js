@@ -1,3 +1,5 @@
+import socket from '../socket';
+
 // ACTION TYPES
 const CHANGE_CHANNEL = 'CHANGE_CHANNEL';
 
@@ -13,6 +15,7 @@ export default function reducer (state = '', action) {
   switch (action.type) {
 
     case CHANGE_CHANNEL:
+      socket.emit('join-drawing', window.location.pathname);
       return action.channelName
 
     default:

@@ -11,8 +11,8 @@ function ChannelList (props) {
       {
         channels.map(channel => {
           return (
-            <li key={channel.id}>
-              <NavLink to={`/channels/${channel.id}`}>
+            <li key={channel.path}>
+              <NavLink to={`${channel.path}`}>
                 <span># {channel.name}</span>
                 <span className="badge">{ messages.filter(message => message.channelId === channel.id).length }</span>
               </NavLink>

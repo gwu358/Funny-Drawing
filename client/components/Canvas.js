@@ -11,11 +11,12 @@ class Canvas extends React.Component {
   componentDidMount() {
     canvas = this.refs.canvas;
     ctx = canvas.getContext('2d');
+    setup();
     document.addEventListener('DOMContentLoaded', setup);
   }
   render() {
     return (
-    <div width={640} height={425}>
+    <div width={500} height={400}>
       <canvas ref="canvas"  />
     </div>
     )
@@ -23,7 +24,7 @@ class Canvas extends React.Component {
 }
 
 export function clear () {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if(ctx) ctx.clearRect(0, 0, 500, 400);
 }
 
 /**
@@ -75,9 +76,9 @@ const colors = [
   'brown',
 ];
 
-function setup () {
+export function setup () {
   // document.body.appendChild(canvas);
-  console.log('setting up...')
+  // if(!canvas) return;
   setupColorPicker();
   setupCanvas();
 }
@@ -147,13 +148,13 @@ function setupCanvas () {
   // Set the size of the canvas and attach a listener
   // to handle resizing.
   resize();
-  window.addEventListener('resize', resize);
+  canvas.addEventListener('resize', resize);
 
-  window.addEventListener('mousedown', function (e) {
+  canvas.addEventListener('mousedown', function (e) {
     currentMousePosition = pos(e);
   });
 
-  window.addEventListener('mousemove', function (e) {
+  canvas.addEventListener('mousemove', function (e) {
     if (!e.buttons) return;
     lastMousePosition = currentMousePosition;
     currentMousePosition = pos(e);
@@ -168,7 +169,5 @@ function pos (e) {
     e.pageY - canvas.offsetTop,
   ];
 }
-
-document.addEventListener('DOMContentLoaded', setup);
 
 export default Canvas;

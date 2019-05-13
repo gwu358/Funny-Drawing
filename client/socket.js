@@ -1,29 +1,35 @@
 import io from 'socket.io-client';
-import store, { getMessage, getChannel, loadGameThunk, updatePlayers, fetchNameThunk } from './store';
-import {draw, events as whiteboard} from './components/Canvas';
+import store, { addMessage, addChannel, loadGameThunk, updatePlayers, getChannels } from './store';
+import {draw, clear, events as whiteboard} from './components/Canvas';
+import { push } from 'react-router-redux'
 
 const socket = io(window.location.origin);
 
-const roomPath = window.location.pathname;
-
 socket.on('connect', () => {
   console.log('I am now connected to the server!');
-  socket.emit('join-drawing', roomPath);
+  // socket.emit('join-drawing', roomPath);
 
   socket.on('new-message', message => {
-    store.dispatch(getMessage(message));
+    store.dispatch(addMessage(message));
   });
 
   socket.on('new-channel', channel => {
-    store.dispatch(getChannel(channel));
+    store.dispatch(addChannel(channel));
+    
+    // if(channel.leader === store.getState().name){
+    //   console.log('channel.leader, store.getState().name');
+    //   store.dispatch(push('/'));
+    // }
   });
 
+  socket.emit('fetch-channels-from-client');
 });
 
 //drawing
 socket.on('replay-drawing', (instructions, game) => {
   store.dispatch(loadGameThunk(game));
-  store.dispatch(fetchNameThunk());
+  // store.dispatch(fetchNameThunk());
+  clear();
   instructions.forEach(instruction => draw(...instruction, false));
 });
 
@@ -32,11 +38,15 @@ socket.on('draw-from-server', (start, end, color) => {
 });
 
 whiteboard.on('draw', (start, end, color) => {
-  socket.emit('draw-from-client', roomPath, start, end, color);
+  socket.emit('draw-from-client', window.location.pathname, start, end, color);
 });
 
 
 //game
+socket.on('fetch-channels-from-server', (channels) => {
+  store.dispatch(getChannels(channels));
+});
+
 socket.on('start-from-server', (game) => {
   store.dispatch(loadGameThunk(game));
 });

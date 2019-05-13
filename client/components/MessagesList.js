@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Message from './Message';
 import NewMessageEntry from './NewMessageEntry';
 import { changeCurrentChannel } from '../store';
 import Canvas from './Canvas';
+
 function MessagesList (props) {
 
   const { channelId, messages } = props;
@@ -22,7 +24,7 @@ function MessagesList (props) {
 class MessagesListLoader extends Component {
 
   componentDidMount () {
-    this.props.changeCurrentChannel(this.props.channel.name);
+    this.props.changeCurrentChannel(this.props.channel.name);   
   }
 
   componentWillReceiveProps (nextProps) {
@@ -32,6 +34,7 @@ class MessagesListLoader extends Component {
   }
 
   render () {
+    // if(this.props.match.params.channelId > this.props.totalChannels) return <Redirect to="/"/>;
     return (
       <MessagesList {...this.props} />
     );
@@ -43,6 +46,7 @@ const mapStateToProps = function (state, ownProps) {
   const channelId = Number(ownProps.match.params.channelId);
 
   return {
+    totalChannels: state.channels.length,
     channel: state.channels.find(channel => channel.id === channelId) || { name: '' },
     messages: state.messages.filter(message => message.channelId === channelId),
     channelId

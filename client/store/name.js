@@ -24,7 +24,10 @@ export function fetchNameThunk(){
 
 export function updateNameThunk (name) {
   return function thunk(dispatch) {
-    return axios.post('/api/name', {name});
+    return axios.post('/api/name', {name})
+    .then(() => {
+      dispatch(updateName(name));
+    })  
   }
 }
 

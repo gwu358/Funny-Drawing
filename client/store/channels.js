@@ -2,12 +2,12 @@ import axios from 'axios';
 import socket from '../socket';
 
 // ACTION TYPES
-const GET_CHANNEL = 'GET_CHANNEL';
+const ADD_CHANNEL = 'ADD_CHANNEL';
 const GET_CHANNELS = 'GET_CHANNELS';
 
 // ACTION CREATORS
-export function getChannel (channel) {
-  const action = { type: GET_CHANNEL, channel };
+export function addChannel (channel) {
+  const action = { type: ADD_CHANNEL, channel };
   return action;
 }
 
@@ -17,29 +17,31 @@ export function getChannels (channels) {
 }
 
 // THUNK CREATORS
-export function fetchChannels () {
-
-  return function thunk (dispatch) {
-    return axios.get('/api/channels')
-      .then(res => res.data)
-      .then(channels => {
-        const action = getChannels(channels);
-        dispatch(action);
-      });
-  };
+export function fetchChannels (channels) {
+  dispatch(getChannels(channels));
+  // return function thunk (dispatch) {
+  //   return axios.get('/api/channels')
+  //     .then(res => res.data)
+  //     .then(channels => {
+  //       const action = getChannels(channels);
+  //       dispatch(action);
+  //     });
+  // };
 }
 
-export function postChannel (channel, history) {
-
-  return function thunk (dispatch) {
-    return axios.post('/api/channels', channel)
-      .then(res => res.data)
-      .then(newChannel => {
-        dispatch(getChannel(newChannel));
-        socket.emit('new-channel', newChannel);
-        history.push(`/channels/${newChannel.id}`);
-      });
+export function postChannel (channelName) {
+  return function thunk (dispatch, getState) {
+    socket.emit('new-channel', channelName, getState().name);
   };
+  // return function thunk (dispatch) {
+  //   return axios.post('/api/channels', channel)
+  //     .then(res => res.data)
+  //     .then(newChannel => {
+  //       dispatch(getChannel(newChannel));
+  //       socket.emit('new-channel', newChannel);
+  //       history.push(`/channels/${newChannel.id}`);
+  //     });
+  // };
 }
 
 // REDUCER
@@ -50,7 +52,7 @@ export default function reducer (state = [], action) {
     case GET_CHANNELS:
       return action.channels;
 
-    case GET_CHANNEL:
+    case ADD_CHANNEL:
       return [...state, action.channel];
 
     default:

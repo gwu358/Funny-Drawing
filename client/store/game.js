@@ -4,7 +4,8 @@ import socket from '../socket';
 const initialState = {
   time: 0,
   players: [],
-  artist: ''
+  artist: '',
+  path: ''
 }
 const roomPath = window.location.pathname;
 // ACTION TYPES
@@ -12,6 +13,9 @@ const roomPath = window.location.pathname;
 const LOAD_GANE = 'LOAD_GANE';
 const UPDATE_PLAYERS = 'UPDATE_PLAYERS';
 const START_GAME = 'START_GAME';
+const JOIN_GAME = 'JOIN_GAME';
+const LEAVE_GAME = 'LEAVE_GAME';
+
 // ACTION CREATORS
 
 function loadGame(game) {
@@ -24,12 +28,25 @@ function startGame(game) {
   return action;
 }
 
+export function updateGameRoom(path) {
+  const action = { type: UPDATE_GAME_ROOM, path };
+  return action;
+}
+
+// export function joinGame(name, roomPath){
+//   socket
+// }
+
+// export function leaveGame(name, roomPath){
+
+// }
+
 export function updatePlayers(players) {
   const action = { type: UPDATE_PLAYERS, players };
   return action;
 }
 
-//thunk
+// THUNK CREATORS
 export function startGameThunk(game){
   game.players.forEach(player => {
     const gaming = setInterval(() => {
@@ -60,20 +77,6 @@ export function loadGameThunk(game) {
     }, 1000);
   }
 }
-
-// THUNK CREATORS
-
-// export function fetchMessages () {
-
-//   return function thunk (dispatch) {
-//     return axios.get('/api/messages')
-//       .then(res => res.data)
-//       .then(messages => {
-//         const action = getMessages(messages);
-//         dispatch(action);
-//       });
-//   };
-// }
 
 // REDUCER
 
