@@ -14,24 +14,10 @@ class Main extends Component {
   componentDidMount () {
     this.props.fetchName();
     store.dispatch(fetchGameRoom());
-    // const messagesThunk = fetchMessages();
-    // const channelsThunk = fetchChannels();
-    // store.dispatch(messagesThunk);
-    // store.dispatch(channelsThunk);
   }
 
   render () {
-    // console.log(this.props)
-    // let path;
-    // const inGameChannel = this.props.channels.find(
-    //   (channel) => channel.leader === this.props.name);
-    //   if(inGameChannel && 
-    //     this.props.location.pathname !== `/channels/${inGameChannel.id}`) 
-    //   path = `/channels/${inGameChannel.id}`;
     const {channels, name, path, players, editingName} = this.props;
-    console.log(this.props.path);
-    console.log(this.props.location.pathname);
-    console.log(this.props.path ===this.props.location.pathname);
     return (    
       <div>
         {(!this.props.name || this.props.editingName) && <Login />} 
@@ -39,9 +25,9 @@ class Main extends Component {
         {/\d/.test(this.props.location.pathname) && <Navbar />}
         <main>
           <Switch>
-            {this.props.path &&
+            {/* {this.props.path &&
             this.props.path !== this.props.location.pathname
-               && <Redirect to={this.props.path} />}
+               && <Redirect to={this.props.path} />} */}
             <Route exact path="/new-channel" component={NewChannelEntry} />
             <Route exact path="/channels/:channelId" component={MessagesList} />
             {/* <Redirect to="/channels/1" /> */}

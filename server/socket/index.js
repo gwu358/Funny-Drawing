@@ -9,7 +9,7 @@ function createRoom(path) {
   
   if(!path) return;
   if (games[path] === undefined) {
-    games[path] = {path, players: [], drawing: []};
+    games[path] = {path, players: [], drawing: [], messages:[]};
   }
   return games[path];
 }
@@ -37,14 +37,18 @@ module.exports = io => {
     })
 
     //channel
-    socket.on('new-message', message => {
-      socket.broadcast.emit('new-message', message);
+    socket.on('fetch-messages', (path) => {
+      socket.emit('post-messages', games[path].messages);
+    });
+
+    socket.on('new-message', (path, message) => {
+      console.log(games[path]);
+      games[path].messages.push(message);
+      io.in(path).emit('new-message', message);
     });
 
     socket.on('fetch-channels-from-client', () => {
-      console.log(games);
       const channdels = Object.keys(games).map((path, i) => ({path, name: games[path].name, leader:games[path].leader}));
-      console.log(channdels);
       socket.emit('fetch-channels-from-server', channdels);
     })
 
@@ -54,7 +58,6 @@ module.exports = io => {
       game.name = name;
       game.leader = leader;
       const channel = {path: game.path, name, leader};
-      console.log(games)
       io.emit('new-channel', channel);
     });
 

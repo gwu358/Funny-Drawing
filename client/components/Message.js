@@ -12,7 +12,7 @@ export default function Message (props) {
         </a>
       </div> */}
       <div className="media-body">
-        <h4 className="media-heading">{ message.author.name }: { message.content }</h4>
+        <h4 className="media-heading">{ message.name }: { message.content }</h4>
       </div>
     </li>
   );

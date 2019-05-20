@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { postMessage, writeMessage } from '../store';
+import { newMessage, writeMessage } from '../store';
+import socket from '../socket';
 
 function NewMessageEntry (props) {
 
@@ -40,10 +41,7 @@ const mapDispatchToProps = function (dispatch, ownProps) {
     },
     handleSubmit (name, content, evt) {
       evt.preventDefault();
-
-      const { channelId } = ownProps;
-
-      dispatch(postMessage({ name, content, channelId }));
+      socket.emit('new-message', window.location.pathname, { name, content });
       dispatch(writeMessage(''));
     }
   };
