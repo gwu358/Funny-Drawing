@@ -10,7 +10,8 @@ class Game extends React.Component {
 
   }
   startGame() {
-    socket.emit('start', window.location.pathname, Date.now());;
+    socket.emit('start', window.location.pathname, Date.now());
+
   }
 
    join(name) {
@@ -24,7 +25,7 @@ class Game extends React.Component {
   render() {
     const {game, name} = this.props;
     if(!game) return (<div />);
-    let start = (game.time == 0) ?
+    let start = (game.time == 0) && game.players.length > 1?
       <button onClick={() => this.startGame(5000)}>start</button> :
       null;
     let join = game.players.includes(name) ?

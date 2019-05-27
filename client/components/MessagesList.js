@@ -15,12 +15,9 @@ function MessagesList (props) {
     <div>
       <div>
         <Canvas/>
-        &nbsp;&nbsp;&nbsp;
-        Players:
-        <br />
-        <br />
         <div style={{flex:1}}>
           <ul>
+            Players:
             { players.map((player, i) => {
               return <li key={i} style={{display:'inline'}}> {i+1+'. '+player}</li>
             }) }
@@ -48,9 +45,6 @@ class MessagesListLoader extends Component {
   }
 
   render () {
-    console.log(this.props.name)
-    console.log(this.props.totalChannels)
-    console.log(this.props.channels)
     // if(this.props.match.params.channelId !==
     //   this.props.match.params.channelId < 0 || 
     //   this.props.match.params.channelId > this.props.totalChannels)
