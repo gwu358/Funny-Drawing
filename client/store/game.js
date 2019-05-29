@@ -52,11 +52,13 @@ export function startGameThunk(game) {
   else game.time = 0;
   return function thunk(dispatch) {
     game.players.forEach(player => {
+      console.log(player)
       const gaming = setInterval(() => {
         // socket.emit('update-drawing', roomPath, []);
         // game.updateDrawing();
         if (game.time < 0) {
           clearInterval(gaming);
+          game.time = 5;
           return;
         }
         dispatch(loadGame(game));
