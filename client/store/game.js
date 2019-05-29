@@ -47,23 +47,27 @@ export function updatePlayers(players) {
 }
 
 // THUNK CREATORS
-export function startGameThunk(game){
-  game.players.forEach(player => {
-    const gaming = setInterval(() => {
-      socket.emit('update-drawing', roomPath, []);
-      game.updateDrawing();
-      if (game.time < 0) {
-        clearInterval(gaming);
-        return;
-      }
-      dispatch(drawing(game));
-      game.time -= 1;   
-    }, 1000);
-  })
+export function startGameThunk(game) {
+  if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
+  else game.time = 0;
+  return function thunk(dispatch) {
+    game.players.forEach(player => {
+      const gaming = setInterval(() => {
+        // socket.emit('update-drawing', roomPath, []);
+        // game.updateDrawing();
+        if (game.time < 0) {
+          clearInterval(gaming);
+          return;
+        }
+        dispatch(loadGame(game));
+        game.time -= 1;
+      }, 1000);
+    })
+  }
 }
 
 export function loadGameThunk(game) {
-  if(game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime))/1000);
+  if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
   else game.time = 0;
   return function thunk(dispatch) {
     const timer = setInterval(() => {
@@ -73,7 +77,7 @@ export function loadGameThunk(game) {
       }
       dispatch(loadGame(game));
       game.time -= 1;
-         
+
     }, 1000);
   }
 }
@@ -84,10 +88,10 @@ export default function reducer(state = initialState, action) {
 
   switch (action.type) {
     case LOAD_GANE:
-      state = {...action.game};
+      state = { ...action.game };
       return state;
     case UPDATE_PLAYERS:
-      state = {...state, players: action.players}
+      state = { ...state, players: action.players }
       return state;
     default:
       return state;

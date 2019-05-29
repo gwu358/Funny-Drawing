@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import store, { addMessage, addChannel, loadGameThunk, updatePlayers, getChannels, postMessage, postMessages } from './store';
+import store, { addMessage, addChannel, startGameThunk, loadGameThunk, updatePlayers, getChannels, postMessage, postMessages } from './store';
 import {draw, clear, events as whiteboard} from './components/Canvas';
 import {browserHistory} from 'react-router';
 
@@ -56,7 +56,7 @@ socket.on('fetch-channels-from-server', (channels) => {
 });
 
 socket.on('start-from-server', (game) => {
-  store.dispatch(loadGameThunk(game));
+  store.dispatch(startGameThunk(game));
 });
 
 socket.on('update-players', (players) => {
