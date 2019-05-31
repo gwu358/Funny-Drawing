@@ -47,6 +47,8 @@ export function updatePlayers(players) {
 }
 
 // THUNK CREATORS
+// store the drawer's name to server, change listen to check the
+// current drawer
 export function startGameThunk(game) {
   if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
   else game.time = 0;
