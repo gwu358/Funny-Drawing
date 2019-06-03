@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import store, { addMessage, addChannel, startGameThunk, loadGameThunk, updatePlayers, getChannels, postMessage, postMessages } from './store';
-import {draw, clear, events as whiteboard} from './components/Canvas';
+import {draw, clearBoard, events as whiteboard} from './components/Canvas';
 import {browserHistory} from 'react-router';
 
 const socket = io(window.location.origin);
@@ -32,7 +32,7 @@ socket.on('connect', () => {
 socket.on('replay-drawing', (instructions, game) => {
   store.dispatch(loadGameThunk(game));
   // store.dispatch(fetchNameThunk());
-  clear();
+  clearBoard();
   instructions.forEach(instruction => draw(...instruction, false));
 });
 

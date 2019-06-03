@@ -3,6 +3,7 @@ import React from 'react';
 import {EventEmitter, } from 'events';
 
 export const events = new EventEmitter();
+export const canvasStatus = {canDraw: true}
 let canvas;
 let ctx;
 
@@ -23,7 +24,7 @@ class Canvas extends React.Component {
   }
 }
 
-export function clear () {
+export function clearBoard () {
   if(ctx) ctx.clearRect(0, 0, 500, 400);
 }
 
@@ -47,7 +48,7 @@ export function draw (start, end, strokeColor = 'black', shouldBroadcast = true)
 
   // If shouldBroadcast is truthy, we will emit a draw event to listeners
   // with the start, end and color data.
-  shouldBroadcast &&
+  shouldBroadcast && 
         events.emit('draw', start, end, strokeColor);
 }
 
@@ -158,8 +159,9 @@ function setupCanvas () {
     if (!e.buttons) return;
     lastMousePosition = currentMousePosition;
     currentMousePosition = pos(e);
+    console.log(canvas.canDraw);
     lastMousePosition && currentMousePosition &&
-            draw(lastMousePosition, currentMousePosition, color, true);
+            draw(lastMousePosition, currentMousePosition, color, canvas.canDraw);
   });
 }
 

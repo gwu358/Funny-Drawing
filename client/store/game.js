@@ -1,6 +1,8 @@
 import axios from 'axios';
 import socket from '../socket';
 
+import {clearBoard, canvasStatus} from '../components/Canvas';
+
 const initialState = {
   time: 0,
   players: [],
@@ -47,17 +49,20 @@ export function updatePlayers(players) {
 }
 
 // THUNK CREATORS
-// store the drawer's name to server, change listen to check the
+// save the drawer's name to server, change listen to check the
 // current drawer
 export function startGameThunk(game) {
   if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
   else game.time = 0;
-  return function thunk(dispatch) {
+  return function thunk(dispatch, getState) {
     game.players.forEach(player => {
+      clearBoard();
       console.log(player)
       const gaming = setInterval(() => {
         // socket.emit('update-drawing', roomPath, []);
         // game.updateDrawing();
+        
+        canvasStatus.canDraw = (player === getState.name);
         if (game.time < 0) {
           clearInterval(gaming);
           game.time = 5;
