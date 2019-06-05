@@ -55,16 +55,17 @@ export function startGameThunk(game) {
   if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
   else game.time = 0;
   return function thunk(dispatch, getState) {
+    clearBoard();
     game.players.forEach(player => {
-      clearBoard();
-      console.log(player)
+      
+      canvasStatus.canDraw = (player === getState.name);
       const gaming = setInterval(() => {
         // socket.emit('update-drawing', roomPath, []);
         // game.updateDrawing();
-        
-        canvasStatus.canDraw = (player === getState.name);
+        console.log(player)
         if (game.time < 0) {
           clearInterval(gaming);
+          clearBoard();
           game.time = 5;
           return;
         }
