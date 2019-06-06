@@ -3,7 +3,7 @@ import React from 'react';
 import {EventEmitter, } from 'events';
 
 export const events = new EventEmitter();
-export const canvasStatus = {canDraw: true}
+
 let canvas;
 let ctx;
 
@@ -145,24 +145,37 @@ function resize () {
   ctx.lineCap = 'round';
 }
 
+
+function mouseDown(e){
+  currentMousePosition = pos(e);
+}
+
+function mouseMove(e){
+  if (!e.buttons) return;
+    lastMousePosition = currentMousePosition;
+    currentMousePosition = pos(e);
+    lastMousePosition && currentMousePosition &&
+            draw(lastMousePosition, currentMousePosition, color, canvas.canDraw);
+}
+
+export function enableDrawing(){
+  canvas.addEventListener('mousedown', mouseDown);
+  canvas.addEventListener('mousemove', mouseMove);
+}
+
+export function disableDrawing(){
+  canvas.removeEventListener('mousedown', mouseDown);
+  canvas.removeEventListener('mousemove', mouseMove);
+}
+
+
 function setupCanvas () {
   // Set the size of the canvas and attach a listener
   // to handle resizing.
   resize();
   canvas.addEventListener('resize', resize);
-
-  canvas.addEventListener('mousedown', function (e) {
-    currentMousePosition = pos(e);
-  });
-
-  canvas.addEventListener('mousemove', function (e) {
-    if (!e.buttons) return;
-    lastMousePosition = currentMousePosition;
-    currentMousePosition = pos(e);
-    console.log(canvas.canDraw);
-    lastMousePosition && currentMousePosition &&
-            draw(lastMousePosition, currentMousePosition, color, canvas.canDraw);
-  });
+  enableDrawing();
+  
 }
 
 function pos (e) {

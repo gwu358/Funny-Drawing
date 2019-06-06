@@ -64,8 +64,17 @@ module.exports = io => {
     //game
     socket.on('start', (path, startTime)=> {
       const game = games[path];
-      game.startTime = startTime;
-      io.in(path).emit('start-from-server', game);
+      let i = 0;
+      var interval = setInterval(function() {
+        game.drawing.length = 0;
+        game.artist = game.players[i++];
+        game.startTime = Date.now();
+        io.in(path).emit('start-from-server', game);
+        if (i >= game.players.length){
+          clearInterval(interval);
+          game.artist = null;
+        } 
+    }, 5000)
     })
 
     socket.on('join', (path, name) => {

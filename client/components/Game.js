@@ -10,8 +10,7 @@ class Game extends React.Component {
 
   }
   startGame() {
-    socket.emit('start', window.location.pathname, Date.now());
-
+    socket.emit('start', window.location.pathname);
   }
 
    join(name) {

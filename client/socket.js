@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
-import store, { addMessage, addChannel, startGameThunk, loadGameThunk, updatePlayers, getChannels, postMessage, postMessages } from './store';
-import {draw, clearBoard, events as whiteboard} from './components/Canvas';
+import store, { addMessage, addChannel, startTurn, loadGameThunk, updatePlayers, getChannels, postMessage, postMessages } from './store';
+import Canvas, {draw, clearBoard, events as whiteboard} from './components/Canvas';
 import {browserHistory} from 'react-router';
 
 const socket = io(window.location.origin);
@@ -56,7 +56,8 @@ socket.on('fetch-channels-from-server', (channels) => {
 });
 
 socket.on('start-from-server', (game) => {
-  store.dispatch(startGameThunk(game));
+  clearBoard();
+  store.dispatch(startTurn(game));
 });
 
 socket.on('update-players', (players) => {

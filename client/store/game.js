@@ -1,7 +1,7 @@
 import axios from 'axios';
 import socket from '../socket';
 
-import {clearBoard, canvasStatus} from '../components/Canvas';
+import {clearBoard, enableDrawing, disableDrawing} from '../components/Canvas';
 
 const initialState = {
   time: 0,
@@ -51,28 +51,21 @@ export function updatePlayers(players) {
 // THUNK CREATORS
 // save the drawer's name to server, change listen to check the
 // current drawer
-export function startGameThunk(game) {
-  if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
-  else game.time = 0;
-  return function thunk(dispatch, getState) {
-    clearBoard();
-    game.players.forEach(player => {
-      
-      canvasStatus.canDraw = (player === getState.name);
-      const gaming = setInterval(() => {
-        // socket.emit('update-drawing', roomPath, []);
-        // game.updateDrawing();
-        console.log(player)
-        if (game.time < 0) {
-          clearInterval(gaming);
-          clearBoard();
-          game.time = 5;
-          return;
-        }
-        dispatch(loadGame(game));
-        game.time -= 1;
-      }, 1000);
-    })
+export function startTurn(game) {
+  // if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
+  // else game.time = 0;
+  return function thunk(dispatch, getState) {   
+    if(game.artist === getState().name) enableDrawing();
+    else disableDrawing();
+    game.time = 5;
+    const gaming = setInterval(() => {
+      if (game.time < 0) {
+        clearInterval(gaming);
+        return;
+      }
+      dispatch(loadGame(game));
+      game.time -= 1;
+    }, 1000);
   }
 }
 

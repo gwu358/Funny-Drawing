@@ -10,7 +10,7 @@ import Lobby from './Lobby';
 
 function MessagesList (props) {
 
-  const { channelId, messages, players } = props;
+  const { channelId, messages, players, artist } = props;
   return (
     <div>
       <div>
@@ -22,6 +22,7 @@ function MessagesList (props) {
               return <li key={i} style={{display:'inline'}}> {i+1+'. '+player}</li>
             }) }
           </ul>
+          {artist && <p>{artist} is drawing... </p>}
         </div>
       </div>
       <ul id = 'message-list' className="media-list">
@@ -67,6 +68,7 @@ const mapStateToProps = function (state, ownProps) {
     messages: state.messages,
     channelId,
     name: state.name,
+    artist: state.game.artist,
     players: state.game.players
   };
 };
