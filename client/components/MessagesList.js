@@ -1,40 +1,38 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Message from './Message';
 import NewMessageEntry from './NewMessageEntry';
 import { changeCurrentChannel } from '../store';
 import Canvas from './Canvas';
 import socket from '../socket';
-import Lobby from './Lobby';
 
-function MessagesList (props) {
+function MessagesList(props) {
 
-  const { channelId, messages, players, artist } = props;
+  const { channelId, messages, players, artist, setScrollPane } = props;
   return (
     <div>
       <div>
-        <div style={{display: 'flex'}}>
-          <Canvas style={{flex: '1'}}/>
-          <div style={{flex:1}}>
-          <select >
-            <option value="0">Easy</option>
-            <option value="1">Medium</option>
-            <option value="2">Hard</option>
-            <option value="3">Very Hard</option>
-        </select>
+        <div style={{ display: 'flex' }}>
+          <Canvas style={{ flex: '1' }} />
+          <div style={{ flex: 1 }}>
+            <select >
+              <option value="0">Easy</option>
+              <option value="1">Medium</option>
+              <option value="2">Hard</option>
+              <option value="3">Very Hard</option>
+            </select>
             <ul>
               Players:
-              { players.map((player, i) => {
-                return <li key={i} style={{display:'inline'}}> {i+1+'. '+player}</li>
-              }) }
+              {players.map((player, i) => {
+                return <li key={i} style={{ display: 'inline' }}> {i + 1 + '. ' + player}</li>
+              })}
             </ul>
             {artist && <p>{artist} is drawing... </p>}
           </div>
         </div>
       </div>
-      <ul id = 'message-list' className="media-list">
-        { messages.map((message, i) => <Message message={message} key={i} />) }
+      <ul id='message-list' className="media-list" ref={el => { setScrollPane(el) }}>
+        {messages.map((message, i) => <Message message={message} key={i} />)}
       </ul>
       <NewMessageEntry channelId={channelId} />
     </div>
@@ -43,20 +41,36 @@ function MessagesList (props) {
 
 class MessagesListLoader extends Component {
 
-  componentDidMount () {
-    this.props.changeCurrentChannel(this.props.channel.name);
-    socket.emit('fetch-messages', window.location.pathname)
+  scrollToBottom = () => {
+    console.log(this.scrollPane)
+    console.log(this.scrollPane.scrollIntoView)
+    // this.scrollPane.scrollIntoView({ behavior: 'smooth' });
+    this.scrollPane.scrollTop = this.scrollPane.scrollHeight;
   }
 
-  componentWillReceiveProps (nextProps) {
+  setScrollPane = (scrollPane) => {
+    this.scrollPane = scrollPane;
+  }
+
+  componentDidMount() {
+    this.props.changeCurrentChannel(this.props.channel.name);
+    socket.emit('fetch-messages', window.location.pathname);
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+  componentWillReceiveProps(nextProps) {
     if (nextProps.channel.name !== this.props.channel.name) {
       this.props.changeCurrentChannel(nextProps.channel.name);
     }
   }
 
-  render () {
+  render() {
     return (
-      <MessagesList {...this.props} />
+      <MessagesList {...this.props} setScrollPane={this.setScrollPane} />
     );
   }
 }
@@ -85,7 +99,7 @@ const mapDispatchToProps = function (dispatch) {
   };
 };
 
-  export default connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(MessagesListLoader);

@@ -38,6 +38,7 @@ module.exports = io => {
 
     //channel
     socket.on('fetch-messages', (path) => {
+      if(games[path])
       socket.emit('place-messages', games[path].messages);
     });
 
