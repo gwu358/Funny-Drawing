@@ -103,6 +103,7 @@ module.exports = io => {
 
     socket.on('draw-from-client', (path, start, end, color) => {
       const game = games[path];
+      if(!game) return;
       const drawing = game.drawing;
       drawing.push([start, end, color,]);
       socket.broadcast.to(path).emit('draw-from-server', start, end, color);

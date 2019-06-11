@@ -42,10 +42,9 @@ function MessagesList(props) {
 class MessagesListLoader extends Component {
 
   scrollToBottom = () => {
-    console.log(this.scrollPane)
-    console.log(this.scrollPane.scrollIntoView)
-    // this.scrollPane.scrollIntoView({ behavior: 'smooth' });
-    this.scrollPane.scrollTop = this.scrollPane.scrollHeight;
+    let lastMessage = this.props.messages[this.props.messages.length - 1];
+    if(lastMessage && lastMessage.name === this.props.name)
+      this.scrollPane.scrollTop = this.scrollPane.scrollHeight;
   }
 
   setScrollPane = (scrollPane) => {
