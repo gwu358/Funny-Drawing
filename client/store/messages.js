@@ -18,7 +18,7 @@ function addMessages (messages) {
 
 // THUNK CREATORS
 
-export function postMessages(messages){
+export function placeMessages(messages){
   return function(dispatch){
     dispatch(addMessages(messages));
   }

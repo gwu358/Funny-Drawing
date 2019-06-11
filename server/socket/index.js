@@ -38,7 +38,7 @@ module.exports = io => {
 
     //channel
     socket.on('fetch-messages', (path) => {
-      socket.emit('post-messages', games[path].messages);
+      socket.emit('place-messages', games[path].messages);
     });
 
     socket.on('new-message', (path, message) => {

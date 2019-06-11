@@ -1,7 +1,6 @@
 import io from 'socket.io-client';
-import store, { addMessage, addChannel, startTurn, loadGameThunk, updatePlayers, getChannels, postMessage, postMessages } from './store';
+import store, { addMessage, addChannel, startTurn, loadGameThunk, updatePlayers, getChannels, postMessage, placeMessages } from './store';
 import Canvas, {draw, clearBoard, events as whiteboard} from './components/Canvas';
-import {browserHistory} from 'react-router';
 
 const socket = io(window.location.origin);
 
@@ -9,8 +8,8 @@ socket.on('connect', () => {
   console.log('I am now connected to the server!');
   // socket.emit('join-drawing', roomPath);
 
-  socket.on('post-messages', messages => {
-    store.dispatch(postMessages(messages));
+  socket.on('place-messages', messages => {
+    store.dispatch(placeMessages(messages));
   });
 
   socket.on('new-message', message => {

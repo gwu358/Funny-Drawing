@@ -14,15 +14,23 @@ function MessagesList (props) {
   return (
     <div>
       <div>
-        <Canvas/>
-        <div style={{flex:1}}>
-          <ul>
-            Players:
-            { players.map((player, i) => {
-              return <li key={i} style={{display:'inline'}}> {i+1+'. '+player}</li>
-            }) }
-          </ul>
-          {artist && <p>{artist} is drawing... </p>}
+        <div style={{display: 'flex'}}>
+          <Canvas style={{flex: '1'}}/>
+          <div style={{flex:1}}>
+          <select >
+            <option value="0">Easy</option>
+            <option value="1">Medium</option>
+            <option value="2">Hard</option>
+            <option value="3">Very Hard</option>
+        </select>
+            <ul>
+              Players:
+              { players.map((player, i) => {
+                return <li key={i} style={{display:'inline'}}> {i+1+'. '+player}</li>
+              }) }
+            </ul>
+            {artist && <p>{artist} is drawing... </p>}
+          </div>
         </div>
       </div>
       <ul id = 'message-list' className="media-list">
@@ -37,6 +45,7 @@ class MessagesListLoader extends Component {
 
   componentDidMount () {
     this.props.changeCurrentChannel(this.props.channel.name);
+    socket.emit('fetch-messages', window.location.pathname)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -77,9 +86,6 @@ const mapDispatchToProps = function (dispatch) {
   return {
     changeCurrentChannel(channelName) {
       dispatch(changeCurrentChannel(channelName));
-    },
-    fetchMessages() {
-      socket.emit('fetch-messages', window.location.pathname);
     }
   };
 };
