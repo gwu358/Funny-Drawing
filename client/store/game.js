@@ -67,7 +67,7 @@ export function startTurn(game) {
       game.time -= 1;
     }, 1000);
   }
-}
+}   
 
 export function loadGameThunk(game) {
   if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
