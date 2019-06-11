@@ -55,11 +55,6 @@ class MessagesListLoader extends Component {
   }
 
   render () {
-    // if(this.props.match.params.channelId !==
-    //   this.props.match.params.channelId < 0 || 
-    //   this.props.match.params.channelId > this.props.totalChannels)
-    //   return <Redirect to='/' />
-    // if(this.props.match.params.channelId > this.props.totalChannels) return <Redirect to="/"/>;
     return (
       <MessagesList {...this.props} />
     );
