@@ -68,15 +68,20 @@ module.exports = io => {
       let i = 0;
       var interval = setInterval(function() {
         getWord(game.difficult).then(word => {
-          game.word = word;
-          game.drawing.length = 0;
-          game.artist = game.players[i++];
-          game.startTime = Date.now();
-          io.in(path).emit('start-from-server', game);
           if (i >= game.players.length){
             clearInterval(interval);
             game.artist = null;
+            game.word = undefined;
+            game.startTime = undefined;
+            game.drawing.length = 0;
           } 
+          else{
+            game.word = word;
+            game.drawing.length = 0;
+            game.artist = game.players[i++];
+            game.startTime = Date.now();
+          }
+          io.in(path).emit('start-from-server', game);
         })
     }, 5000)
     })

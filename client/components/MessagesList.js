@@ -8,14 +8,14 @@ import socket from '../socket';
 
 function MessagesList(props) {
 
-  const { channelId, messages, players, artist, setScrollPane, word, difficult, changeDifficult } = props;
+  const { channelId, messages, players, artist, name, setScrollPane, word, difficult, changeDifficult } = props;
   return (
     <div>
       <div>
         <div style={{ display: 'flex' }}>
           <Canvas style={{ flex: '1' }} />
           <div style={{ flex: 1 }}>
-            <select  value={difficult} onChange={changeDifficult}>
+            <select value={difficult} onChange={changeDifficult}>
               <option value="">All Random</option>
               <option value="0">Easy</option>
               <option value="1">Medium</option>
@@ -25,9 +25,21 @@ function MessagesList(props) {
             <ul>
               Players:
               {players.map((player, i) => {
-                return <li key={i} style={{ display: 'inline' }}>{'\n'} {i + 1 + '. ' + player}</li>
+                return <li key={i} style={{ display: 'inline' }}> {i + 1 + '. ' + player}</li>
               })}
             </ul>
+            {
+              // word && (artist === name ? word :
+                word && <p>{
+                  'word: ' + (artist === name ? word :
+                    Array.from(word).map(ch => {
+                      if (ch === ' ') return '|';
+                      else return '_';
+                    }).join(' '))
+                  } 
+                </p>
+                // )
+            }
             {artist && <p>{artist} is drawing... </p>}
           </div>
         </div>
@@ -44,7 +56,7 @@ class MessagesListLoader extends Component {
 
   scrollToBottom = () => {
     let lastMessage = this.props.messages[this.props.messages.length - 1];
-    if(lastMessage && lastMessage.name === this.props.name)
+    if (lastMessage && lastMessage.name === this.props.name)
       this.scrollPane.scrollTop = this.scrollPane.scrollHeight;
   }
 
@@ -98,7 +110,7 @@ const mapDispatchToProps = function (dispatch) {
     changeCurrentChannel(channelName) {
       dispatch(changeCurrentChannel(channelName));
     },
-    changeDifficult(event){
+    changeDifficult(event) {
       socket.emit('change-difficult', window.location.pathname, event.target.value);
     }
   };
