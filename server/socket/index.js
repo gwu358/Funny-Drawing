@@ -93,6 +93,10 @@ module.exports = io => {
       io.in(path).emit('update-players', game.players);
     })
 
+    socket.on('change-difficult', (path, difficult) => {
+      games[path].difficult = difficult;
+    })
+
     //drawing
     socket.on('join-drawing', (path) => {
       socket.join(path);

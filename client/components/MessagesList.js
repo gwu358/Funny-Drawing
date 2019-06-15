@@ -8,18 +8,19 @@ import socket from '../socket';
 
 function MessagesList(props) {
 
-  const { channelId, messages, players, artist, setScrollPane } = props;
+  const { channelId, messages, players, artist, setScrollPane, difficult, changeDifficult } = props;
   return (
     <div>
       <div>
         <div style={{ display: 'flex' }}>
           <Canvas style={{ flex: '1' }} />
           <div style={{ flex: 1 }}>
-            <select >
+            <select  value={difficult} onChange={changeDifficult}>
               <option value="0">Easy</option>
               <option value="1">Medium</option>
               <option value="2">Hard</option>
               <option value="3">Very Hard</option>
+              <option value="">All Random</option>
             </select>
             <ul>
               Players:
@@ -86,7 +87,8 @@ const mapStateToProps = function (state, ownProps) {
     channelId,
     name: state.name,
     artist: state.game.artist,
-    players: state.game.players
+    players: state.game.players,
+    difficult: state.game.difficult
   };
 };
 
@@ -94,6 +96,9 @@ const mapDispatchToProps = function (dispatch) {
   return {
     changeCurrentChannel(channelName) {
       dispatch(changeCurrentChannel(channelName));
+    },
+    changeDifficult(event){
+      socket.emit('change-difficult', window.location.pathname, event.target.value);
     }
   };
 };
