@@ -1,6 +1,6 @@
 const Message = require('../db/models/message');
 const Channel = require('../db/models/channel');
-const getWord = require('../words/wordGenator');
+const getWord = require('../words/wordGenator.js');
 // const drawings = {};
 const rooms = {};
 const games = {};
@@ -67,16 +67,17 @@ module.exports = io => {
       const game = games[path];
       let i = 0;
       var interval = setInterval(function() {
-        let word = getWord(game.difficult);
-        console.log(word);
-        game.drawing.length = 0;
-        game.artist = game.players[i++];
-        game.startTime = Date.now();
-        io.in(path).emit('start-from-server', game);
-        if (i >= game.players.length){
-          clearInterval(interval);
-          game.artist = null;
-        } 
+        getWord(game.difficult).then(word => {
+          game.word = word;
+          game.drawing.length = 0;
+          game.artist = game.players[i++];
+          game.startTime = Date.now();
+          io.in(path).emit('start-from-server', game);
+          if (i >= game.players.length){
+            clearInterval(interval);
+            game.artist = null;
+          } 
+        })
     }, 5000)
     })
 

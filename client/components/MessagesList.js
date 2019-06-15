@@ -8,7 +8,7 @@ import socket from '../socket';
 
 function MessagesList(props) {
 
-  const { channelId, messages, players, artist, setScrollPane, difficult, changeDifficult } = props;
+  const { channelId, messages, players, artist, setScrollPane, word, difficult, changeDifficult } = props;
   return (
     <div>
       <div>
@@ -16,16 +16,16 @@ function MessagesList(props) {
           <Canvas style={{ flex: '1' }} />
           <div style={{ flex: 1 }}>
             <select  value={difficult} onChange={changeDifficult}>
+              <option value="">All Random</option>
               <option value="0">Easy</option>
               <option value="1">Medium</option>
               <option value="2">Hard</option>
               <option value="3">Very Hard</option>
-              <option value="">All Random</option>
             </select>
             <ul>
               Players:
               {players.map((player, i) => {
-                return <li key={i} style={{ display: 'inline' }}> {i + 1 + '. ' + player}</li>
+                return <li key={i} style={{ display: 'inline' }}>{'\n'} {i + 1 + '. ' + player}</li>
               })}
             </ul>
             {artist && <p>{artist} is drawing... </p>}
@@ -88,7 +88,8 @@ const mapStateToProps = function (state, ownProps) {
     name: state.name,
     artist: state.game.artist,
     players: state.game.players,
-    difficult: state.game.difficult
+    difficult: state.game.difficult,
+    word: state.game.word
   };
 };
 
