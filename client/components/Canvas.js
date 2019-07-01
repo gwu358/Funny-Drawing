@@ -1,7 +1,6 @@
 // import { canvas } from './whiteboard'
 import React from 'react';
 import {EventEmitter, } from 'events';
-import store from '../store';
 
 export const events = new EventEmitter();
 
@@ -38,7 +37,6 @@ export function clearBoard () {
  * @param {bool} shouldBroadcast whether to emit an event for this draw
  */
 export function draw (start, end, strokeColor = 'black', shouldBroadcast = true) {
-  if(store.getState().game.artist !== store.getState().name) return;
   // Draw the line between the start and end positions
   // that is colored with the given color.
   ctx.beginPath();
@@ -176,7 +174,6 @@ function setupCanvas () {
   // to handle resizing.
   resize();
   canvas.addEventListener('resize', resize);
-  enableDrawing();
   
 }
 

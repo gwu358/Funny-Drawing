@@ -7,6 +7,16 @@ const socket = io(window.location.origin);
 socket.on('connect', () => {
   console.log('I am now connected to the server!');
   // socket.emit('join-drawing', roomPath);
+  window.onbeforeunload = function(event) {
+    event.preventDefault();
+    if(store.getState().game.artist)
+      socket.emit('disconnected-from-client', window.location.pathname, store.getState().name);
+};
+  // socket.on('disconnected-from-server', () => {
+  //   console.log('quit!')
+  //   if(store.getState.game.artist)
+  //   socket.emit('disconnected-from-client', window.location.pathname, store.getState.name);
+  // })
 
   socket.on('place-messages', messages => {
     store.dispatch(placeMessages(messages));
@@ -61,10 +71,6 @@ socket.on('start-turn-from-server', (game) => {
 
 socket.on('update-players', (players) => {
   store.dispatch(updatePlayers(players))
-})
-
-socket.on('clear-canvas', () => {
-  
 })
 
 export default socket;

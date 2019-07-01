@@ -36,6 +36,8 @@ module.exports = io => {
       console.log(`Client ${socket.id} has disconnected :(`);
     })
 
+    
+
     //channel
     socket.on('fetch-messages', (path) => {
       if(games[path])
@@ -43,7 +45,6 @@ module.exports = io => {
     });
 
     socket.on('new-message', (path, message) => {
-      console.log(games[path]);
       games[path].messages.push(message);
       io.in(path).emit('new-message', message);
     });
@@ -73,33 +74,7 @@ module.exports = io => {
       })
     }
 
-    socket.on('start', (path)=> {
-      const game = games[path];
-      startTurn(game).then(game => 
-        io.in(path).emit('start-turn-from-server', game));
-    //   let i = 0;
-    //   var interval = setInterval(function() {
-    //     getWord(game.difficult).then(word => {
-    //       if (i >= game.players.length){
-    //         clearInterval(interval);
-    //         game.artist = null;
-    //         game.word = undefined;
-    //         game.startTime = undefined;
-    //         game.drawing.length = 0;
-    //         game.players.length = 0;
-    //         io.in(path).emit('start-turn-from-server', game);
-    //       } 
-    //       else{
-    //         game.word = word;
-    //         game.drawing.length = 0;
-    //         game.artist = game.players[i++];
-    //         game.startTime = Date.now();
-    //       }
-    //     })
-    // }, 5000)
-    })
-
-    socket.on('nextTurn', (path) => {
+    function moveToNext(path){
       const game = games[path];
       if (game.turn < game.players.length){
         startTurn(game).then(game => 
@@ -114,6 +89,26 @@ module.exports = io => {
         game.drawing.length = 0;
         game.players.length = 0;
         io.in(path).emit('start-turn-from-server', game);
+      }
+    }
+
+    socket.on('start', (path)=> {
+      const game = games[path];
+      startTurn(game).then(game => 
+        io.in(path).emit('start-turn-from-server', game));
+    })
+
+    socket.on('nextTurn', (path) => {
+      moveToNext(path);
+    })
+
+    socket.on('disconnected-from-client', (path, name)=> {
+      const game = games[path];
+      const index = game.players.indexOf(name);
+      game.players.splice(index, 1);
+      if(index < game.turn) game.turn--;
+      if(index === game.turn){
+        moveToNext(path);
       }
     })
 

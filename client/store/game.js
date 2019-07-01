@@ -3,6 +3,8 @@ import socket from '../socket';
 
 import {clearBoard, enableDrawing, disableDrawing} from '../components/Canvas';
 
+var gaming;
+
 const initialState = {
   time: 0,
   players: [],
@@ -73,8 +75,11 @@ export function startTurn(game) {
       dispatch(loadGame(game));
       return;
     }
+    if(game.artist === getState().name) enableDrawing();
+    else disableDrawing();
     game.time = Math.ceil((game.endTime - Date.now()) / 1000);
-    const gaming = setInterval(() => {
+    if(gaming) clearInterval(gaming);
+    gaming = setInterval(() => {
       if (game.time < 0) {
         clearInterval(gaming);
         if(game.artist === getState().name)
