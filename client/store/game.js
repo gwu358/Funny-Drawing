@@ -51,16 +51,34 @@ export function updatePlayers(players) {
 // THUNK CREATORS
 // save the drawer's name to server, change listen to check the
 // current drawer
+// export function startTurn(game) {
+//   return function thunk(dispatch, getState) {   
+//     if(game.artist === getState().name) enableDrawing();
+//     else disableDrawing();
+//     game.time = 5;
+//     const gaming = setInterval(() => {
+//       if (game.time < 0) {
+//         clearInterval(gaming);
+//         return;
+//       }
+//       dispatch(loadGame(game));
+//       game.time -= 1;
+//     }, 1000);
+//   }
+// }   
 export function startTurn(game) {
-  // if (game.startTime) game.time = Math.round((5000 - (Date.now() - game.startTime)) / 1000);
-  // else game.time = 0;
-  return function thunk(dispatch, getState) {   
-    if(game.artist === getState().name) enableDrawing();
-    else disableDrawing();
-    game.time = 5;
+  
+  return function thunk(dispatch, getState) {
+    if(!game.artist){
+      dispatch(loadGame(game));
+      return;
+    }
+    game.time = Math.ceil((game.endTime - Date.now()) / 1000);
     const gaming = setInterval(() => {
       if (game.time < 0) {
         clearInterval(gaming);
+        if(game.artist === getState().name)
+          socket.emit('nextTurn', window.location.pathname);
         return;
       }
       dispatch(loadGame(game));

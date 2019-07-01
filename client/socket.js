@@ -54,9 +54,9 @@ socket.on('fetch-channels-from-server', (channels) => {
   }
 });
 
-socket.on('start-from-server', (game) => {
+socket.on('start-turn-from-server', (game) => {
   clearBoard();
-  if(game.word) store.dispatch(startTurn(game));
+  store.dispatch(startTurn(game));
 });
 
 socket.on('update-players', (players) => {

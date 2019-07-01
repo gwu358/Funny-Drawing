@@ -24,11 +24,11 @@ class Game extends React.Component {
   render() {
     const {game, name} = this.props;
     if(!game) return (<div />);
-    let start = (game.time == 0) && game.players.length > 1?
+    let start = !game.artist && game.players.length > 1 && game.players.includes(name)?
       <button onClick={() => this.startGame(5000)}>start</button> :
       null;
     let join = game.players.includes(name) ?
-      <button onClick={() => this.leave(name)}>leave</button> :
+      !game.artist && <button onClick={() => this.leave(name)}>leave</button> :
       <button onClick={() => this.join(name)}>join</button>;
     return (
       <React.Fragment>

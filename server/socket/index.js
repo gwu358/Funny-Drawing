@@ -9,7 +9,7 @@ function createRoom(path) {
   
   if(!path) return;
   if (games[path] === undefined) {
-    games[path] = {path, players: [], drawing: [], messages:[]};
+    games[path] = {path, turn: 0, players: [], drawing: [], messages:[]};
   }
   return games[path];
 }
@@ -63,27 +63,58 @@ module.exports = io => {
     });
 
     //game
+    function startTurn(game){
+      return getWord(game.difficult).then((word) => {
+        game.word = word;
+        game.drawing.length = 0;
+        game.artist = game.players[game.turn++];
+        game.endTime = Date.now() + 6000;
+        return game;
+      })
+    }
+
     socket.on('start', (path)=> {
       const game = games[path];
-      let i = 0;
-      var interval = setInterval(function() {
-        getWord(game.difficult).then(word => {
-          if (i >= game.players.length){
-            clearInterval(interval);
-            game.artist = null;
-            game.word = undefined;
-            game.startTime = undefined;
-            game.drawing.length = 0;
-          } 
-          else{
-            game.word = word;
-            game.drawing.length = 0;
-            game.artist = game.players[i++];
-            game.startTime = Date.now();
-          }
-          io.in(path).emit('start-from-server', game);
-        })
-    }, 5000)
+      startTurn(game).then(game => 
+        io.in(path).emit('start-turn-from-server', game));
+    //   let i = 0;
+    //   var interval = setInterval(function() {
+    //     getWord(game.difficult).then(word => {
+    //       if (i >= game.players.length){
+    //         clearInterval(interval);
+    //         game.artist = null;
+    //         game.word = undefined;
+    //         game.startTime = undefined;
+    //         game.drawing.length = 0;
+    //         game.players.length = 0;
+    //         io.in(path).emit('start-turn-from-server', game);
+    //       } 
+    //       else{
+    //         game.word = word;
+    //         game.drawing.length = 0;
+    //         game.artist = game.players[i++];
+    //         game.startTime = Date.now();
+    //       }
+    //     })
+    // }, 5000)
+    })
+
+    socket.on('nextTurn', (path) => {
+      const game = games[path];
+      if (game.turn < game.players.length){
+        startTurn(game).then(game => 
+          io.in(path).emit('start-turn-from-server', game));
+      } 
+      else{
+        game.artist = null;
+        game.word = undefined;
+        game.time = 0;
+        game.turn = 0;
+        game.endTime = undefined;
+        game.drawing.length = 0;
+        game.players.length = 0;
+        io.in(path).emit('start-turn-from-server', game);
+      }
     })
 
     socket.on('join', (path, name) => {
