@@ -9,8 +9,14 @@ socket.on('connect', () => {
   // socket.emit('join-drawing', roomPath);
   window.onbeforeunload = function(event) {
     event.preventDefault();
-    if(store.getState().game.artist)
+    if(store.getState().game.artist){
       socket.emit('disconnected-from-client', window.location.pathname, store.getState().name);
+      socket.emit('new-message', window.location.pathname, { 
+        name: '[system]', 
+        content: `${store.getState().name} has been disconnected and he/she is removed from this game.`
+      });
+    }
+      
 };
   // socket.on('disconnected-from-server', () => {
   //   console.log('quit!')
