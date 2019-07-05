@@ -247,7 +247,7 @@ canvas {
 }
 
 #scoreboard {
-	background-color: rgba(0, 0, 0, 0.8);
+	// background-color: rgba(0, 0, 0, 0.8);
 	width: 100%;
   height: 100%;
 	position: absolute;
@@ -258,10 +258,16 @@ canvas {
 	align-items: center;
 }
 
-#scoreboard {
-	background-color: rgb(204, 204, 204);
+#scoreboard-contents {
+  // height: 180px;
+	// width: 250px;
+	background-color: rgb(232, 255, 131);
 	text-align: center;
 	padding: 20px;
 	position: relative;
 	border-radius: 4px;
+}
+
+#scoreboard-contents th,td{
+  padding:0 15px 0 15px;
 }

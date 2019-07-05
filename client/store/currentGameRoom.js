@@ -13,7 +13,6 @@ function updateRoom(roomPath) {
 
 export function updateCurrentRoom(roomPath) {
   return function thunk(dispatch) {
-    console.log(roomPath)
     return axios.post('/api/room', {roomPath})
       .then(() => {
           dispatch(updateRoom(roomPath));

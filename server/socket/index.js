@@ -90,7 +90,7 @@ module.exports = io => {
         game.drawing.length = 0;
         for(name in game.scoreboard) game.scoreboard[name].received = 0;
         game.artist = game.players[game.turn++];
-        game.endTime = Date.now() + 6000;
+        game.endTime = Date.now() + 10000;
         return game;
       })
     }

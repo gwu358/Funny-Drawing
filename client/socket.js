@@ -87,7 +87,7 @@ socket.on('scoreboard-from-server', (scoreboard)=> {
     store.dispatch(showScoreboard(false));
     if(store.getState().game.artist === store.getState().name)
       socket.emit('nextTurn', window.location.pathname);
-   }, 5000);
+   }, 8000);
 })
 
 export default socket;

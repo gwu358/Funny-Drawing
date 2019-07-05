@@ -14,7 +14,7 @@ const initialState = {
 const roomPath = window.location.pathname;
 // ACTION TYPES
 
-const LOAD_GANE = 'LOAD_GANE';
+const LOAD_GAME = 'LOAD_GAME';
 const UPDATE_PLAYERS = 'UPDATE_PLAYERS';
 const START_GAME = 'START_GAME';
 const UPDATE_SCOREBOARD = 'UPDATE_SCOREBOARD';
@@ -24,7 +24,7 @@ const LEAVE_GAME = 'LEAVE_GAME';
 // ACTION CREATORS
 
 function loadGame(game) {
-  const action = { type: LOAD_GANE, game };
+  const action = { type: LOAD_GAME, game };
   return action;
 }
 
@@ -78,6 +78,7 @@ export function startTurn(game) {
   
   return function thunk(dispatch, getState) {
     if(!game.artist){
+      console.log('here')
       dispatch(loadGame(game));
       return;
     }
@@ -119,7 +120,7 @@ export function loadGameThunk(game) {
 export default function reducer(state = initialState, action) {
 
   switch (action.type) {
-    case LOAD_GANE:
+    case LOAD_GAME:
       state = { ...action.game };
       return state;
     case UPDATE_PLAYERS:
