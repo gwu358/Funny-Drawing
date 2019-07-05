@@ -1,4 +1,4 @@
-// import { canvas } from './whiteboard'
+
 import React from 'react';
 import {EventEmitter, } from 'events';
 

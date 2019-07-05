@@ -3,7 +3,7 @@ import {
   applyMiddleware,
   combineReducers
 } from 'redux';
-// import loggingMiddleware from 'redux-logger';
+
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 

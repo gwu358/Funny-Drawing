@@ -19,29 +19,12 @@ export function getChannels (channels) {
 // THUNK CREATORS
 export function fetchChannels (channels) {
   dispatch(getChannels(channels));
-  // return function thunk (dispatch) {
-  //   return axios.get('/api/channels')
-  //     .then(res => res.data)
-  //     .then(channels => {
-  //       const action = getChannels(channels);
-  //       dispatch(action);
-  //     });
-  // };
 }
 
 export function postChannel (channelName) {
   return function thunk (dispatch, getState) {
     socket.emit('new-channel', channelName, getState().name);
   };
-  // return function thunk (dispatch) {
-  //   return axios.post('/api/channels', channel)
-  //     .then(res => res.data)
-  //     .then(newChannel => {
-  //       dispatch(getChannel(newChannel));
-  //       socket.emit('new-channel', newChannel);
-  //       history.push(`/channels/${newChannel.id}`);
-  //     });
-  // };
 }
 
 // REDUCER

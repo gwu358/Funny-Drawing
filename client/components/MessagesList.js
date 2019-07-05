@@ -30,7 +30,6 @@ function MessagesList(props) {
               })}
             </ul>
             {
-              // word && (artist === name ? word :
                 word && <p>{
                   'word: ' + (artist === name ? word :
                     Array.from(word).map(ch => {
@@ -39,7 +38,6 @@ function MessagesList(props) {
                     }).join(' '))
                   } 
                 </p>
-                // )
             }
             {artist && <p>{artist} is drawing... </p>}
           </div>

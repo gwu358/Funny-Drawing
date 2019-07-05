@@ -1,7 +1,7 @@
 const Message = require('../db/models/message');
 const Channel = require('../db/models/channel');
 const getWord = require('../words/wordGenator.js');
-// const drawings = {};
+
 const rooms = {};
 const games = {};
 
@@ -14,12 +14,6 @@ function createRoom(path) {
   return games[path];
 }
 
-// function getDrawing(roomPath) {
-//   if (drawings[roomPath] === undefined) {
-//     drawings[roomPath] = [];
-//   }
-//   return drawings[roomPath];
-// }
 function getRoomName(socket) {
   const urlArr = socket.request.headers.referer.split('/')
   const roomName = urlArr.pop() // grabbing just the last bit of the url for the room name
@@ -173,14 +167,6 @@ module.exports = io => {
       drawing.push([start, end, color,]);
       socket.broadcast.to(path).emit('draw-from-server', start, end, color);
     });
-
-    // socket.on('update-drawing', (roomPath, drawing) => {
-    //   socket.join(roomPath);
-    //   const game = getGame(roomPath);
-    //   const game.drawing = draw;
-    //   socket.broadcast.to(roomPath).emit('replay-drawing', drawing, game);
-
-    // });
 
     //room
     socket.on('drawing', (...payload) => {// REST - you have many arguments comma separated, but now they are all 1 (ONE) and named payload --> payload === array of all arguments sent in
