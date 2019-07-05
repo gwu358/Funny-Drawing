@@ -45,7 +45,25 @@ module.exports = io => {
     });
 
     socket.on('new-message', (path, message) => {
-      games[path].messages.push(message);
+      const game = games[path];
+      game.messages.push(message);
+      if(game.artist === message.name){
+        socket.emit('new-message', {name:'[system]', content:"You can't send any message as an artist."});
+        return;
+      }
+      if(game.word === message.content){
+        if(game.status[message.name].received){
+          socket.emit('new-message', {name:'[system]', content:"You can only send the correct answer once."});
+        }
+        else{
+          game.status[message.name].received = true;
+          game.status[message.name].score += game.point;
+          game.status[game.artist].score += 1;
+          io.in(path).emit('new-message', {name:'[system]', content:`${message.name} got the correct word! Score +${game.point}.`});
+          if(game.point > 1) game.point--;
+        }
+      }
+      else 
       io.in(path).emit('new-message', message);
     });
 
@@ -67,7 +85,9 @@ module.exports = io => {
     function startTurn(game){
       return getWord(game.difficult).then((word) => {
         game.word = word;
+        game.point = 3;
         game.drawing.length = 0;
+        for(name in game.status) game.status[name].received = false;
         game.artist = game.players[game.turn++];
         game.endTime = Date.now() + 6000;
         return game;
@@ -94,6 +114,8 @@ module.exports = io => {
 
     socket.on('start', (path)=> {
       const game = games[path];
+      game.status = {};
+      game.players.forEach((name) => game.status[name] = {score: 0});
       startTurn(game).then(game => 
         io.in(path).emit('start-turn-from-server', game));
     })
