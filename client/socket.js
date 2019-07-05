@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
-import store, { addMessage, addChannel, startTurn, loadGameThunk, updatePlayers, getChannels, postMessage, placeMessages } from './store';
+import store, { addMessage, addChannel, startTurn, loadGameThunk, updatePlayers, 
+  getChannels, postMessage, placeMessages, updateScoreboard, showScoreboard } from './store';
 import Canvas, {draw, clearBoard, events as whiteboard} from './components/Canvas';
 
 const socket = io(window.location.origin);
@@ -77,6 +78,16 @@ socket.on('start-turn-from-server', (game) => {
 
 socket.on('update-players', (players) => {
   store.dispatch(updatePlayers(players))
+})
+
+socket.on('scoreboard-from-server', (scoreboard)=> { 
+  store.dispatch(updateScoreboard(scoreboard));
+  store.dispatch(showScoreboard(true));
+  setTimeout(function(){ 
+    store.dispatch(showScoreboard(false));
+    if(store.getState().game.artist === store.getState().name)
+      socket.emit('nextTurn', window.location.pathname);
+   }, 5000);
 })
 
 export default socket;

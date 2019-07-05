@@ -52,13 +52,14 @@ module.exports = io => {
         return;
       }
       if(game.word === message.content){
-        if(game.status[message.name].received){
+        if(game.scoreboard[message.name].received){
           socket.emit('new-message', {name:'[system]', content:"You can only send the correct answer once."});
         }
         else{
-          game.status[message.name].received = true;
-          game.status[message.name].score += game.point;
-          game.status[game.artist].score += 1;
+          game.scoreboard[message.name].received = game.point;
+          game.scoreboard[message.name].score += game.point;
+          game.scoreboard[game.artist].score += 1;
+          game.scoreboard[game.artist].received += 1;
           io.in(path).emit('new-message', {name:'[system]', content:`${message.name} got the correct word! Score +${game.point}.`});
           if(game.point > 1) game.point--;
         }
@@ -87,7 +88,7 @@ module.exports = io => {
         game.word = word;
         game.point = 3;
         game.drawing.length = 0;
-        for(name in game.status) game.status[name].received = false;
+        for(name in game.scoreboard) game.scoreboard[name].received = 0;
         game.artist = game.players[game.turn++];
         game.endTime = Date.now() + 6000;
         return game;
@@ -112,10 +113,14 @@ module.exports = io => {
       }
     }
 
+    socket.on('get-scoreboard', (path)=> {
+      io.in(path).emit('scoreboard-from-server', games[path].scoreboard);
+    })
+
     socket.on('start', (path)=> {
       const game = games[path];
-      game.status = {};
-      game.players.forEach((name) => game.status[name] = {score: 0});
+      game.scoreboard = {};
+      game.players.forEach((name) => game.scoreboard[name] = {score: 0});
       startTurn(game).then(game => 
         io.in(path).emit('start-turn-from-server', game));
     })

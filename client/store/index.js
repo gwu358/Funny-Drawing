@@ -19,6 +19,7 @@ import messages from './messages';
 import name from './name';
 import currentGameRoom from './currentGameRoom';
 import editingName from './editingName'
+import showingScoreboard from './showingScoreboard'
 import newChannelEntry from './newChannelEntry';
 import newMessageEntry from './newMessageEntry';
 import game from './game';
@@ -30,6 +31,7 @@ const reducer = combineReducers({
   name,
   currentGameRoom,
   editingName,
+  showingScoreboard,
   newChannelEntry,
   newMessageEntry,
   game
@@ -51,6 +53,7 @@ export * from './messages';
 export * from './name';
 export * from './currentGameRoom';
 export * from './editingName';
+export * from './showingScoreboard';
 export * from './newChannelEntry';
 export * from './newMessageEntry';
 export * from './game';

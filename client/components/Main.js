@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Login from './Login';
+import Scoreboard from './Scoreboard';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import Lobby from './Lobby';
@@ -17,10 +18,12 @@ class Main extends Component {
   }
 
   render () {
-    const {channels, name, path, players, editingName} = this.props;
+    const {name, showingScoreboard, scoreboard} = this.props;
+    
     return (    
       <div>
         {(!this.props.name || this.props.editingName) && <Login />} 
+        {showingScoreboard && <Scoreboard scoreboard = {scoreboard} />}
         {!this.props.players.includes(name) && <Sidebar />}
         {/\d/.test(this.props.location.pathname) && <Navbar />}
         <main>
@@ -45,7 +48,9 @@ const mapStateToProps = function (state) {
     name: state.name,
     path: state.game.path,
     players: state.game.players,
-    editingName: state.editingName
+    editingName: state.editingName,
+    showingScoreboard: state.showingScoreboard,
+    scoreboard: state.game.scoreboard
   };
 };
 

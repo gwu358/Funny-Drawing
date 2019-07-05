@@ -8,7 +8,8 @@ import socket from '../socket';
 
 function MessagesList(props) {
 
-  const { channelId, messages, players, artist, name, setScrollPane, word, difficult, changeDifficult } = props;
+  const { channelId, messages, players, artist, name, setScrollPane,
+     word, difficult, changeDifficult } = props;
   return (
     <div>
       <div>

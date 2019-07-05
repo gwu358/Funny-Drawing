@@ -17,6 +17,7 @@ const roomPath = window.location.pathname;
 const LOAD_GANE = 'LOAD_GANE';
 const UPDATE_PLAYERS = 'UPDATE_PLAYERS';
 const START_GAME = 'START_GAME';
+const UPDATE_SCOREBOARD = 'UPDATE_SCOREBOARD';
 const JOIN_GAME = 'JOIN_GAME';
 const LEAVE_GAME = 'LEAVE_GAME';
 
@@ -47,6 +48,11 @@ export function updateGameRoom(path) {
 
 export function updatePlayers(players) {
   const action = { type: UPDATE_PLAYERS, players };
+  return action;
+}
+
+export function updateScoreboard(scoreboard) {
+  const action = { type: UPDATE_SCOREBOARD, scoreboard };
   return action;
 }
 
@@ -83,7 +89,7 @@ export function startTurn(game) {
       if (game.time < 0) {
         clearInterval(gaming);
         if(game.artist === getState().name)
-          socket.emit('nextTurn', window.location.pathname);
+          socket.emit('get-scoreboard', window.location.pathname);
         return;
       }
       dispatch(loadGame(game));
@@ -118,6 +124,9 @@ export default function reducer(state = initialState, action) {
       return state;
     case UPDATE_PLAYERS:
       state = { ...state, players: action.players }
+      return state;
+      case UPDATE_SCOREBOARD:
+      state = { ...state, scoreboard: action.scoreboard }
       return state;
     default:
       return state;
